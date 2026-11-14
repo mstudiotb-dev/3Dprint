@@ -92,11 +92,34 @@ def build_material_advice_cards(
             "Sấy khô PETG trước khi in",
             (
                 "PETG hút ẩm nhanh. Nhựa ẩm gây kéo tơ, bọt khí, bề mặt rỗ và lớp in yếu. "
-                "Bambu khuyến nghị sấy khoảng 65°C trong 8 giờ; giữ cuộn nhựa trong hộp kín có hạt hút ẩm khi in lâu."
+                f"{vendor} khuyến nghị sấy khoảng 65°C trong 8 giờ; giữ cuộn nhựa trong hộp kín có hạt hút ẩm khi in lâu."
             ),
             "Sấy 65°C · 8 giờ trước khi in",
             "Bảo quản vật liệu",
         ))
+        if PRINTERS.get(printer, {}).get("vendor") == "creality":
+            # M.Studio fork, GĐ1: lessons from the real Goku-head print on the K1 Max.
+            cards.append(_card(
+                "card_k1max_petg_enclosure",
+                "K1 Max in PETG: cửa trước đóng, nắp trên hé 1–2cm",
+                (
+                    "K1 Max là máy kín. Đóng kín cả nắp trên khi in PETG dài gây ống PTFE gập "
+                    "và heat creep; chỉ hé nắp trên 1–2cm, cửa trước đóng. Nhựa PETG trong "
+                    "lỗi nhiều hơn PETG đục — nếu được, in bản quan trọng bằng PETG đục."
+                ),
+                "Cửa đóng · Nắp hé 1–2cm",
+                "Máy in kín",
+            ))
+            cards.append(_card(
+                "card_k1max_bed_cool",
+                "Chờ bed nguội ~40°C mới gỡ mẫu",
+                (
+                    "PETG bám rất chặt trên tấm PEI của K1 Max khi còn nóng. Chờ bed nguội "
+                    "xuống khoảng 40°C rồi mới gỡ, tránh rách mặt PEI và cong mẫu."
+                ),
+                "Bed ~40°C mới gỡ",
+                "Mặt bàn in",
+            ))
         if bed == "High Temp Plate":
             cards.append(_card(
                 "card_petg_smooth_pei_glue",

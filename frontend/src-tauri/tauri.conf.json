@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "LayerZero",
+  "productName": "MStudio LayerZero",
   "version": "2.3.0",
   "identifier": "vn.io.layerzero.studio",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "LayerZero Studio v2.1 — Universal 3MF AI Printability & Aesthetics Optimizer",
+        "title": "MStudio LayerZero — K1 Max 3MF Optimizer (fork of LayerZero Studio)",
         "width": 1440,
         "height": 900,
         "minWidth": 1100,

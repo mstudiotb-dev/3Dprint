@@ -47,6 +47,13 @@ CARRY_OVER_KEYS = (
 # (e.g. `tree_support_wall_count = -1`, out of Orca's 0..2 range), which aborts slicing.
 # Values that only make sense when they fit the target nozzle's layer-height range.
 LAYER_HEIGHT_KEYS = ("layer_height", "initial_layer_print_height")
+# Bambu/AMS-only keys that must never reach a Creality Print project. The rebuild already
+# starts from the target vendor's presets, so these should not appear — this is a
+# backstop for keys carried over from the author's file.
+CREALITY_DROP_KEY_PREFIXES = ("ams_",)
+# Seam values Creality Print 7.3 (Orca-based) accepts. Anything else (e.g. a Bambu-only
+# value) is reset to aligned_back: Creality Print has no separate "Hide Z Seam" key.
+CREALITY_SEAM_VALUES = ("nearest", "aligned", "aligned_back", "back", "random")
 UNUSED_TOOL_COLOUR = "#FFFFFF"
 # Project-level identity keys never listed as "different from system".
 PROJECT_ID_KEYS = {"different_settings_to_system", "inherits_group", "filament_settings_id",
@@ -189,6 +196,17 @@ def build_cross_vendor_config(
     })
     if not toolchanger:
         cfg["filament_map"] = ["1"] * n
+    if meta["vendor"] == "creality":
+        # Backstop: no Bambu/AMS-only key survives into a Creality Print project.
+        for key in [k for k in cfg if k.startswith(CREALITY_DROP_KEY_PREFIXES)]:
+            del cfg[key]
+        # Seam: keep the author's choice when Creality Print accepts it, else the
+        # verified K1 Max default. The bundled process preset already says
+        # aligned_back; this only guards against a Bambu-only author value.
+        seam = str(_first(cfg.get("seam_position", "")))
+        if seam and seam not in CREALITY_SEAM_VALUES:
+            cfg["seam_position"] = "aligned_back"
+
     author_version = str(orig_cfg.get("version") or "") if source_vendor_of(orig_cfg) == "bbl" else ""
     cfg["version"] = native_app_version(printer) or author_version or "02.00.00.00"
     refresh_different_settings_to_system(cfg, printer)

@@ -199,12 +199,13 @@ export const App: React.FC = () => {
 
   const filamentOptionIds = presetOptions?.filaments.map((f) => f.id) ?? ['PLA Lite', 'PLA Basic', 'PETG HF'];
 
-  // The "Open in ..." button follows the selected printer's own slicer (Bambu Studio / Snapmaker Orca).
+  // The "Open in ..." button follows the selected printer's own slicer
+  // (Bambu Studio / Snapmaker Orca / Creality Print — M.Studio fork, GĐ1).
   const printerOptions = presetOptions?.printers ?? FALLBACK_PRINTERS;
   const currentPrinter = printerOptions.find((p) => p.id === printerPreset);
   const slicerId = currentPrinter?.slicer ?? 'bambu_studio';
   const slicerInfo = presetOptions?.slicers?.[slicerId];
-  const slicerLabel = slicerInfo?.label ?? (slicerId === 'snapmaker_orca' ? 'Snapmaker Orca' : 'Bambu Studio');
+  const slicerLabel = slicerInfo?.label ?? (slicerId === 'snapmaker_orca' ? 'Snapmaker Orca' : slicerId === 'creality_print' ? 'Creality Print' : 'Bambu Studio');
   const slicerMissing = slicerInfo?.installed === false;
   const exportTarget = exportPrinter || printerPreset;
   const exportTargetOption = printerOptions.find((p) => p.id === exportTarget);
@@ -824,7 +825,7 @@ export const App: React.FC = () => {
           >
             <i className="ph-bold ph-arrow-square-out text-sm"></i>
             <span className="hidden sm:inline">{slicerLabel}</span>
-            <span className="sm:hidden">{slicerId === 'snapmaker_orca' ? 'Orca' : 'Bambu'}</span>
+            <span className="sm:hidden">{slicerId === 'snapmaker_orca' ? 'Orca' : slicerId === 'creality_print' ? 'Creality' : 'Bambu'}</span>
           </button>
         </div>
       </header>
@@ -1907,7 +1908,7 @@ export const App: React.FC = () => {
                 <code className="font-mono text-[#0071E3]">.stl</code> vào đây hoặc bấm để chọn
               </span>
               <span className="text-[11.5px] text-[#6E6E73] mt-1">
-                Hỗ trợ Bambu Studio / Snapmaker Orca / PrusaSlicer (.3mf) & Binary / ASCII (.stl)
+                Hỗ trợ Bambu Studio / Snapmaker Orca / Creality Print / PrusaSlicer (.3mf) & Binary / ASCII (.stl)
               </span>
               <input
                 type="file"

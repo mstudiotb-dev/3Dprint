@@ -1,0 +1,336 @@
+{
+ "source": {
+  "repository": "https://github.com/mstudiotb-dev/3Dprint",
+  "release": "k1max-gd1",
+  "verification": "Values verified on a real K1 Max print: Goku bust head, 13/11/2026, Creality Print 7.3, PETG Creality (nozzle 245/240C, Smooth PEI bed 75/70C, flow 0.97, max volumetric 12 mm3/s). NOT a dump of Creality Print system presets — pending export from the user's PC for comparison. Retraction (0.8mm, inherited from Hyper PETG) is UNVERIFIED and not included."
+ },
+ "printer_model_id": "K1_MAX",
+ "default_process": {
+  "Creality K1 Max 0.4 nozzle": "0.20mm Standard @Creality K1 Max"
+ },
+ "presets": {
+  "0.10mm Standard @Creality K1 Max": {
+   "type": "process",
+   "name": "0.10mm Standard @Creality K1 Max",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "layer_height": [
+    "0.10"
+   ],
+   "initial_layer_print_height": [
+    "0.2"
+   ],
+   "wall_loops": [
+    "3"
+   ],
+   "top_shell_layers": [
+    "5"
+   ],
+   "bottom_shell_layers": [
+    "4"
+   ],
+   "sparse_infill_density": [
+    "15%"
+   ],
+   "sparse_infill_pattern": [
+    "grid"
+   ],
+   "top_surface_pattern": [
+    "monotonic"
+   ],
+   "bottom_surface_pattern": [
+    "monotonic"
+   ],
+   "seam_position": [
+    "aligned_back"
+   ],
+   "enable_support": [
+    "1"
+   ],
+   "support_type": [
+    "tree(auto)"
+   ],
+   "support_threshold_angle": [
+    "30"
+   ],
+   "support_top_z_distance": [
+    "0.2"
+   ],
+   "support_interface_spacing": [
+    "0.25"
+   ],
+   "brim_type": [
+    "auto_brim"
+   ],
+   "brim_width": [
+    "5"
+   ],
+   "brim_object_gap": [
+    "0.1"
+   ]
+  },
+  "0.12mm Standard @Creality K1 Max": {
+   "type": "process",
+   "name": "0.12mm Standard @Creality K1 Max",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "layer_height": [
+    "0.12"
+   ],
+   "initial_layer_print_height": [
+    "0.2"
+   ],
+   "wall_loops": [
+    "3"
+   ],
+   "top_shell_layers": [
+    "5"
+   ],
+   "bottom_shell_layers": [
+    "4"
+   ],
+   "sparse_infill_density": [
+    "15%"
+   ],
+   "sparse_infill_pattern": [
+    "grid"
+   ],
+   "top_surface_pattern": [
+    "monotonic"
+   ],
+   "bottom_surface_pattern": [
+    "monotonic"
+   ],
+   "seam_position": [
+    "aligned_back"
+   ],
+   "enable_support": [
+    "1"
+   ],
+   "support_type": [
+    "tree(auto)"
+   ],
+   "support_threshold_angle": [
+    "30"
+   ],
+   "support_top_z_distance": [
+    "0.2"
+   ],
+   "support_interface_spacing": [
+    "0.25"
+   ],
+   "brim_type": [
+    "auto_brim"
+   ],
+   "brim_width": [
+    "5"
+   ],
+   "brim_object_gap": [
+    "0.1"
+   ]
+  },
+  "0.16mm Standard @Creality K1 Max": {
+   "type": "process",
+   "name": "0.16mm Standard @Creality K1 Max",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "layer_height": [
+    "0.16"
+   ],
+   "initial_layer_print_height": [
+    "0.2"
+   ],
+   "wall_loops": [
+    "3"
+   ],
+   "top_shell_layers": [
+    "5"
+   ],
+   "bottom_shell_layers": [
+    "4"
+   ],
+   "sparse_infill_density": [
+    "15%"
+   ],
+   "sparse_infill_pattern": [
+    "grid"
+   ],
+   "top_surface_pattern": [
+    "monotonic"
+   ],
+   "bottom_surface_pattern": [
+    "monotonic"
+   ],
+   "seam_position": [
+    "aligned_back"
+   ],
+   "enable_support": [
+    "1"
+   ],
+   "support_type": [
+    "tree(auto)"
+   ],
+   "support_threshold_angle": [
+    "30"
+   ],
+   "support_top_z_distance": [
+    "0.2"
+   ],
+   "support_interface_spacing": [
+    "0.25"
+   ],
+   "brim_type": [
+    "auto_brim"
+   ],
+   "brim_width": [
+    "5"
+   ],
+   "brim_object_gap": [
+    "0.1"
+   ]
+  },
+  "0.20mm Standard @Creality K1 Max": {
+   "type": "process",
+   "name": "0.20mm Standard @Creality K1 Max",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "layer_height": [
+    "0.20"
+   ],
+   "initial_layer_print_height": [
+    "0.2"
+   ],
+   "wall_loops": [
+    "3"
+   ],
+   "top_shell_layers": [
+    "5"
+   ],
+   "bottom_shell_layers": [
+    "4"
+   ],
+   "sparse_infill_density": [
+    "15%"
+   ],
+   "sparse_infill_pattern": [
+    "grid"
+   ],
+   "top_surface_pattern": [
+    "monotonic"
+   ],
+   "bottom_surface_pattern": [
+    "monotonic"
+   ],
+   "seam_position": [
+    "aligned_back"
+   ],
+   "enable_support": [
+    "1"
+   ],
+   "support_type": [
+    "tree(auto)"
+   ],
+   "support_threshold_angle": [
+    "30"
+   ],
+   "support_top_z_distance": [
+    "0.2"
+   ],
+   "support_interface_spacing": [
+    "0.25"
+   ],
+   "brim_type": [
+    "auto_brim"
+   ],
+   "brim_width": [
+    "5"
+   ],
+   "brim_object_gap": [
+    "0.1"
+   ]
+  },
+  "Creality K1 Max 0.4 nozzle": {
+   "type": "machine",
+   "name": "Creality K1 Max 0.4 nozzle",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "printer_model": "Creality K1 Max",
+   "printer_model_id": "K1_MAX",
+   "printable_area": [
+    "0x0",
+    "300x0",
+    "300x300",
+    "0x300"
+   ],
+   "printable_height": "300",
+   "nozzle_diameter": [
+    "0.4"
+   ],
+   "min_layer_height": [
+    "0.08"
+   ],
+   "max_layer_height": [
+    "0.32"
+   ],
+   "default_print_profile": "0.20mm Standard @Creality K1 Max",
+   "gcode_flavor": "klipper"
+  },
+  "Creality PETG @Creality K1 Max": {
+   "type": "filament",
+   "name": "Creality PETG @Creality K1 Max",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Creality K1 Max 0.4 nozzle"
+   ],
+   "filament_type": [
+    "PETG"
+   ],
+   "filament_vendor": [
+    "Creality"
+   ],
+   "filament_diameter": [
+    "1.75"
+   ],
+   "filament_flow_ratio": [
+    "0.97"
+   ],
+   "filament_max_volumetric_speed": [
+    "12"
+   ],
+   "nozzle_temperature": [
+    "240"
+   ],
+   "nozzle_temperature_initial_layer": [
+    "245"
+   ],
+   "textured_plate_temp": [
+    "70"
+   ],
+   "textured_plate_temp_initial_layer": [
+    "75"
+   ],
+   "hot_plate_temp": [
+    "70"
+   ],
+   "hot_plate_temp_initial_layer": [
+    "75"
+   ]
+  }
+ }
+}

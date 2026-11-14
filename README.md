@@ -17,6 +17,37 @@
 
 [Website](https://layerzero.io.vn) · [Downloads (GitHub Releases)](https://github.com/nnmduc/layerzero/releases/latest) · [English](#overview) · [Tiếng Việt](#giới-thiệu-tiếng-việt) · [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md)
 
+---
+
+## M.Studio fork cho Creality K1 Max (nhánh `k1max-gd1`, GĐ1)
+
+Repo này là bản fork của [LayerZero Studio gốc của nnmduc](https://github.com/nnmduc/layerzero)
+(MIT — xem `LICENSE` và `NOTICE`, giữ nguyên không sửa), được tác giả cho phép build bản
+Windows, rồi chỉnh lại cho **Creality K1 Max + Creality Print 7.3 + PETG Creality**.
+
+**Khác gì so với bản gốc:**
+- Thêm máy **Creality K1 Max 0.4 nozzle** (CoreXY, kín, khổ 300×300×300mm) và slicer
+  **Creality Print** — xem `backend/printer_catalog.py`, `backend/vendor_profiles/creality-k1max-presets.json`.
+- Thêm nhựa **PETG Creality** với số đã kiểm chứng trên bản in thật (đầu tượng Goku,
+  13/11/2026): nozzle lớp đầu 245°C / các lớp sau 240°C, bed Smooth PEI lớp đầu 75°C /
+  các lớp sau 70°C, Flow 0.97, max volumetric 12 mm³/s; luật PETG K1 Max: support top
+  gap ≥ 0.2mm, brim gap ≥ 0.1mm, Spiral Lift, seam `aligned_back` (Creality Print 7.3
+  không có key "Hide Z Seam" riêng).
+- File Bambu được rebuild thành project K1 Max chuẩn (bỏ key AMS/Bambu-only, giữ màu
+  và lựa chọn của tác giả) và mở thẳng trong Creality Print bằng 1 click.
+- Thẻ hướng dẫn PETG riêng cho K1 Max: sấy 65°C · 8 giờ, cửa trước đóng + nắp trên hé
+  1–2cm, chờ bed nguội ~40°C mới gỡ mẫu.
+
+**Giữ nguyên từ bản gốc:** lõi `profiler.py` / `patcher.py` (vát phẳng đáy 0.80mm, đối
+chiếu 17 thông số), AI BYO (Claude Code / agy, fallback offline), giấy phép MIT.
+
+**Chưa làm trong GĐ1 (cần đối chiếu sau):** preset trong bundle này lấy từ các số in
+thật đã kiểm chứng, CHƯA phải bản dump preset hệ thống của Creality Print 7.3 — cần
+xuất preset thật từ PC để đối chiếu. Retraction 0.8mm (kế thừa từ Hyper PETG) CHƯA
+kiểm chứng nên không có trong preset. Chưa gắn Activate HWID. Tag `Application` của
+file .3mf xuất ra vẫn giữ dạng BambuStudio (cần sửa `patcher.py` ở GĐ sau nếu muốn
+đổi sang Creality Print).
+
 </div>
 
 ---

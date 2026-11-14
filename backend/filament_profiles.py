@@ -17,6 +17,7 @@ from printer_catalog import (
     PRINTERS,
     SLICERS,
     VENDOR_FILAMENTS,
+    load_creality_k1max_bundle,
     load_snapmaker_u1_bundle,
     needs_cross_vendor_retarget,
     normalize_printer,
@@ -28,10 +29,14 @@ from slicer_launcher import slicer_installed
 from profiler import get_system_baseline, resolve_profile
 
 # Filament choices offered in the UI: key -> Bambu preset base name (before " @BBL ...").
+# "PETG Creality" is the M.Studio fork's GĐ1 filament: PETG Creality on the K1 Max, with
+# values verified on the real Goku-head print (13/11/2026). Other keys on a K1 Max resolve
+# to generic Orca names and are NOT verified — see VENDOR_FILAMENTS in printer_catalog.py.
 FILAMENTS: dict[str, str] = {
     "PLA Lite": "Bambu PLA Lite",
     "PLA Basic": "Bambu PLA Basic",
     "PETG HF": "Bambu PETG HF",
+    "PETG Creality": "Creality PETG",
 }
 DEFAULT_FILAMENT = "PLA Lite"
 
@@ -104,6 +109,30 @@ MATERIAL_POLICIES: dict[str, dict[str, Any]] = {
     },
 }
 
+# K1 Max PETG policy (M.Studio fork, GĐ1). Same safety floors as the generic PETG
+# policy — PETG welds to its supports and to a zero-gap brim on any printer — plus the
+# K1 Max specifics proven on the Goku print: seam hidden at the back (Creality Print
+# 7.3 has NO separate "Hide Z Seam" key, so `seam_position = aligned_back` is the
+# correct setting) and Spiral Lift instead of a tall Normal Lift.
+# Retraction is deliberately NOT in here: 0.8mm is inherited from Hyper PETG and is
+# UNVERIFIED on the K1 Max — do not hard-code it as a proven value.
+PETG_K1MAX_POLICY: dict[str, Any] = {
+    "label": "PETG",
+    "support_top_z_distance": "0.2",
+    "support_interface_spacing": "0.25",
+    "min_support_top_z_distance": 0.2,
+    "brim_object_gap": "0.1",
+    "screw_brim_object_gap": "0.1",
+    "min_brim_object_gap": 0.1,
+    "z_hop": "0.4",
+    "z_hop_type": "Spiral Lift",
+    "seam_position": "aligned_back",
+    "ironing_flow": "10%",
+    "ironing_speed": "20",
+    "force_full_overhang_fan": False,
+    "weak_layer_adhesion": False,
+}
+
 MODEL_FAMILIES = ("PLA", "PLA_LITE", "PETG")
 
 
@@ -145,7 +174,16 @@ def vendor_filament_base(printer: str, filament: str) -> str:
     """Preset base name of a UI filament key (or any preset name) in the printer vendor's catalog."""
     base = filament_base_name(filament)
     if vendor_of(printer) != "bbl" and base in FILAMENTS.values():
-        return VENDOR_FILAMENTS[vendor_of(printer)][filament_key_for(base)]
+        mapping = VENDOR_FILAMENTS[vendor_of(printer)]
+        key = filament_key_for(base)
+        if key in mapping:
+            return mapping[key]
+        # A filament key this vendor's map does not know yet (e.g. "PETG Creality"
+        # on a Snapmaker printer): fall back to the vendor's PETG entry for PETG
+        # families instead of raising KeyError.
+        if material_family(base) == "PETG":
+            return mapping.get("PETG HF", base)
+        return base
     return base
 
 
@@ -159,10 +197,15 @@ def resolve_filament_preset(printer: str, filament: str) -> str:
 
 @lru_cache(maxsize=32)
 def resolve_process_preset(printer: str, quality: str = "0.20mm Standard") -> str:
-    """Process preset of `quality` for the printer; U1 printers use Snapmaker's default process."""
+    """Process preset of `quality` for the printer; U1 printers use Snapmaker's default process,
+    K1 Max printers use the bundled Creality default process (GĐ1: 0.20mm Standard)."""
     printer = normalize_printer(printer)
     if vendor_of(printer) == "snapmaker":
         default = load_snapmaker_u1_bundle()["default_process"].get(printer)
+        picked = _pick_compatible(quality, printer, profiles_for(printer))
+        return picked or default or f"{quality} {PRINTERS[printer]['fallback_process_suffix']}"
+    if vendor_of(printer) == "creality":
+        default = load_creality_k1max_bundle()["default_process"].get(printer)
         picked = _pick_compatible(quality, printer, profiles_for(printer))
         return picked or default or f"{quality} {PRINTERS[printer]['fallback_process_suffix']}"
     picked = _pick_compatible(quality, printer, profiles_for(printer))
@@ -183,12 +226,22 @@ def equivalent_filament_preset(printer: str, slot: dict[str, Any]) -> str:
         return resolve_filament_preset(printer, base)
     fam = slot.get("family")
     ftype = (slot.get("type") or "").upper().replace("-S", "")
-    candidates = {
-        "SUPPORT": ["Generic Support For PLA", "Generic PVA", "Generic PLA"],
-        "PETG": ["Generic PETG HF", "Generic PETG"],
-        "PLA": ["Generic PLA"],
-        "PLA_LITE": ["Generic PLA"],
-    }.get(fam or "", [f"Generic {ftype}", "Generic PLA"] if ftype else ["Generic PLA"])
+    if vendor_of(printer) == "creality":
+        # GĐ1: only PETG Creality is a real bundled preset; support/PLA slots fall
+        # back to generic Orca names (unverified on the K1 Max).
+        candidates = {
+            "SUPPORT": ["Generic Support For PLA", "Generic PLA"],
+            "PETG": ["Creality PETG"],
+            "PLA": ["Generic PLA"],
+            "PLA_LITE": ["Generic PLA"],
+        }.get(fam or "", [f"Generic {ftype}", "Generic PLA"] if ftype else ["Generic PLA"])
+    else:
+        candidates = {
+            "SUPPORT": ["Generic Support For PLA", "Generic PVA", "Generic PLA"],
+            "PETG": ["Generic PETG HF", "Generic PETG"],
+            "PLA": ["Generic PLA"],
+            "PLA_LITE": ["Generic PLA"],
+        }.get(fam or "", [f"Generic {ftype}", "Generic PLA"] if ftype else ["Generic PLA"])
     profiles = profiles_for(printer)
     for base in candidates:
         picked = _pick_compatible(base, printer, profiles)
@@ -221,8 +274,20 @@ def policy_for(filament: str) -> dict[str, Any]:
     return MATERIAL_POLICIES.get(fam, MATERIAL_POLICIES["PLA"])
 
 
+def policy_for_printer(filament: str, printer: str) -> dict[str, Any]:
+    """K1 Max PETG gets the verified K1 Max policy (incl. `aligned_back` seam);
+    every other printer/filament keeps the generic family policy."""
+    if vendor_of(printer) == "creality" and material_family(filament_base_name(filament)) == "PETG":
+        return PETG_K1MAX_POLICY
+    return policy_for(filament)
+
+
 # Plates the Snapmaker U1 profile set defines temperatures for; any other Bambu plate becomes Textured PEI.
 SNAPMAKER_BED_TYPES = ("Textured PEI Plate", "High Temp Plate")
+
+# Plates the K1 Max bundle defines temperatures for (Textured PEI = textured_plate_temp,
+# Smooth PEI = High Temp Plate = hot_plate_temp). Same rule as the U1 set.
+CREALITY_BED_TYPES = ("Textured PEI Plate", "High Temp Plate")
 
 
 def bed_type_of(project_settings: dict[str, Any], printer: str | None = None) -> str:
@@ -232,6 +297,8 @@ def bed_type_of(project_settings: dict[str, Any], printer: str | None = None) ->
         raw = raw[0] if raw else None
     bed = raw if raw in BED_TYPE_TEMP_KEY else DEFAULT_BED_TYPE
     if printer and vendor_of(printer) == "snapmaker" and bed not in SNAPMAKER_BED_TYPES:
+        return DEFAULT_BED_TYPE
+    if printer and vendor_of(printer) == "creality" and bed not in CREALITY_BED_TYPES:
         return DEFAULT_BED_TYPE
     return bed
 

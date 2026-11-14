@@ -30,6 +30,18 @@ export const FALLBACK_PRINTERS: PrinterOption[] = [
     max_tools: 4,
     slicer: 'snapmaker_orca' as const,
   })),
+  // M.Studio fork, GĐ1: Creality K1 Max (single nozzle, Creality Print).
+  {
+    id: 'Creality K1 Max 0.4 nozzle',
+    label: 'K1 Max',
+    vendor: 'creality' as const,
+    vendor_label: 'Creality',
+    nozzle: '0.4',
+    kinematics: 'corexy',
+    enclosed: true,
+    max_tools: null,
+    slicer: 'creality_print' as const,
+  },
 ];
 
 export const printerOptionLabel = (p: PrinterOption) => `${p.label} (${p.nozzle}mm)`;

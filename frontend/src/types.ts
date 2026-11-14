@@ -150,14 +150,14 @@ export interface FilamentSlotInfo {
 export interface MaterialContext {
   printer_preset: string;
   printer_label: string;
-  printer_vendor: 'bbl' | 'snapmaker';
+  printer_vendor: 'bbl' | 'snapmaker' | 'creality';
   kinematics: 'bedslinger' | 'corexy' | 'corexy_toolchanger';
   nozzle: string;
   /** Independent toolheads (Snapmaker U1: 4); null for AMS printers feeding one nozzle. */
   max_tools: number | null;
   slicer: SlicerId;
   /** Vendor the author saved the file for; null for STL / PrusaSlicer files. */
-  source_vendor: 'bbl' | 'snapmaker' | null;
+  source_vendor: 'bbl' | 'snapmaker' | 'creality' | null;
   /** True when export rebuilds the project from the target printer's presets (e.g. Bambu file -> U1). */
   cross_vendor_retarget: boolean;
   enclosed: boolean;
@@ -170,12 +170,12 @@ export interface MaterialContext {
   mixed_model_families: boolean;
 }
 
-export type SlicerId = 'bambu_studio' | 'snapmaker_orca';
+export type SlicerId = 'bambu_studio' | 'snapmaker_orca' | 'creality_print';
 
 export interface PrinterOption {
   id: string;
   label: string;
-  vendor: 'bbl' | 'snapmaker';
+  vendor: 'bbl' | 'snapmaker' | 'creality';
   vendor_label: string;
   nozzle: string;
   kinematics: string;
