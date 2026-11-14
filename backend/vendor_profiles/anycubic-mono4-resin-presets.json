@@ -2,7 +2,7 @@
  "source": {
   "repository": "https://github.com/mstudiotb-dev/3Dprint",
   "release": "resin-mono4-gd2",
-  "verification": "Manufacturer-recommended values from Anycubic for Water-Wash Resin 2.0 on the Photon Mono 4 (0.05mm layer): normal exposure 2.4s (range 2-2.5s), first layer 25-40s, bottom exposure 30s, 5 bottom layers, light-off 1s, Z lift 5mm, lift 8mm/s, retract 8mm/s, AA 1. NOT verified on the user's own Mono 4 yet — compare with the user's Photon Workshop settings before printing."
+  "verification": "Manufacturer-recommended values from Anycubic for Water-Wash Resin 2.0 on the Photon Mono 4 (0.05mm layer): normal exposure 2.4s (range 2-2.5s), first layer 25-40s, bottom exposure 30s, 5 bottom layers, light-off 1s, Z lift 5mm, lift 8mm/s, retract 8mm/s, AA 1. NOT verified on the user's own Mono 4 yet — compare with the user's CHITUBOX settings before printing."
  },
  "printer_model_id": "PHOTON_MONO_4",
  "default_process": {
