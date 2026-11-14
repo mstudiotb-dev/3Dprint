@@ -13,9 +13,8 @@ are Anycubic's recommended values for the Photon Mono 4 at 0.05mm layer
 height (normal exposure 2.4s, range 2-2.5s; first layer 25-40s; bottom
 exposure 30s, 5 bottom layers; light-off 1s; Z lift 5mm at 8mm/s, retract
 8mm/s; AA 1). They are NOT verified on the user's own Mono 4 yet — when the
-user's Photon Workshop settings are exported, replace the values here and
-update `source.verification`. (The user's slicer is CHITUBOX, not Photon
-Workshop — Photon Workshop is only a secondary option.)
+user's CHITUBOX settings are exported, replace the values here and
+update `source.verification`. (Photon Workshop is only a secondary slicer.)
 
 Known unverified items (do not present as proven):
 - `printer_model_id` ("PHOTON_MONO_4"): placeholder until a real Photon
