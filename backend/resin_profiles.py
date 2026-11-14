@@ -78,7 +78,7 @@ WATER_WASH_2_0: dict[str, Any] = {
     "provenance": (
         "Manufacturer-recommended values from Anycubic for Water-Wash Resin 2.0 "
         "on the Photon Mono 4 (0.05mm layer). NOT verified on the user's own "
-        "printer yet — compare with the user's Photon Workshop settings."
+        "printer yet — compare with the user's CHITUBOX settings."
     ),
 }
 

@@ -6,7 +6,7 @@ Run from `backend/`:  .venv/bin/python -m unittest discover -s tests -v
 The preset numbers here are Anycubic's MANUFACTURER-RECOMMENDED values for the
 Photon Mono 4 at 0.05mm layer height — the tests pin them so a later edit
 cannot silently change a number the user has not verified on his own printer.
-If the user's Photon Workshop settings differ, update `resin_profiles.py`
+If the user's CHITUBOX settings differ, update `resin_profiles.py`
 (and the bundle builder) and these tests together.
 """
 
