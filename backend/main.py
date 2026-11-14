@@ -28,7 +28,7 @@ from ai_runner import _ensure_desktop_path, get_available_engines, stream_agent_
 from patcher import apply_3mf_optimizations, apply_stl_export, build_baseline_audit
 from filament_profiles import build_material_context, list_preset_options
 from printer_catalog import PRINTERS, normalize_printer
-from slicer_launcher import open_in_slicer, reveal_in_file_manager, slicer_installed
+from slicer_launcher import open_in_slicer, reveal_in_file_manager, slicer_installed, slicer_not_installed_message
 from profiler import profile_3mf
 
 SUPPORTED_EXTENSIONS = (".3mf", ".stl")
@@ -341,12 +341,19 @@ def apply_and_export(req: ApplyRequest) -> dict[str, Any]:
     if not opened and (req.reveal_in_finder or req.open_in_slicer or req.open_in_bambu):
         reveal_in_file_manager(target_to_open)
 
+    # GĐ2: when the printer's slicer is not installed, tell the user plainly
+    # where to get it instead of silently showing the folder.
+    missing = ""
+    if not opened and slicer != "bambu_studio" and not slicer_installed(slicer):
+        missing = slicer_not_installed_message(slicer)
+
     return {
         "session_id": req.session_id,
         "download_url": f"/api/download/{req.session_id}",
         "saved_path": str(target_to_open),
         "slicer": slicer,
         "opened_in_slicer": opened,
+        "slicer_missing_message": missing,
         **res,
     }
 

@@ -62,13 +62,23 @@ def build_volume_cards(objects: list[dict[str, Any]], printer: str, machine: dic
         f"{o['name']} ({o['size_mm'][0]:.0f}×{o['size_mm'][1]:.0f}×{o['size_mm'][2]:.0f}mm)" for o in oversized[:3]
     )
     more = f" và {len(oversized) - 3} chi tiết khác" if len(oversized) > 3 else ""
+    # GĐ2: resin parts cannot be scaled down without losing detail and cannot
+    # be "laid flat" the FDM way — a big statue must be split into parts first.
+    if meta.get("technology") == "resin":
+        advice = (
+            "Mono 4 chỉ in được tối đa 153.4×87×165mm — tượng lớn bắt buộc phải "
+            "tách part trước khi in (dùng MStudio Tách Part 3D), không nên scale cả "
+            "tượng xuống vì sẽ mất chi tiết."
+        )
+    else:
+        advice = "hãy thu nhỏ (scale), cắt đôi (cut) hoặc xoay nằm chi tiết trong slicer trước khi in."
     return [_card(
         "card_exceeds_build_volume",
         f"{len(oversized)} chi tiết vượt kích thước in của {meta['label']}",
         (
             f"{names}{more} lớn hơn vùng in của {meta['vendor_label']} {meta['label']} "
             f"({bed[0]:.0f}×{bed[1]:.0f}×{height:.0f}mm). Slicer sẽ không cắt lớp được khay này: "
-            "hãy thu nhỏ (scale), cắt đôi (cut) hoặc xoay nằm chi tiết trong slicer trước khi in."
+            f"{advice}"
         ),
         f"Vùng in {bed[0]:.0f}×{bed[1]:.0f}×{height:.0f}mm",
         "Kích thước máy in",

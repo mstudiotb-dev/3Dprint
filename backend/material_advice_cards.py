@@ -4,6 +4,11 @@ Material-specific diagnostic cards (PLA / PLA Lite / PETG).
 Most cards are `MATERIAL_ADVICE`: guidance the slicer cannot apply (drying, glue, door),
 shown without an approve toggle. `SWITCH_BED_PLATE` is actionable: it moves the project to
 Textured PEI when the vendor profile marks the current plate unsupported for this filament.
+
+M.Studio fork, GĐ2: resin cards (Water-Wash Resin 2.0 on the Anycubic Photon Mono 4) are
+returned instead of the FDM cards when the printer is a resin printer — bed plates, drying
+and enclosure advice do not apply to resin. The resin preset numbers in these cards are
+Anycubic's manufacturer-recommended values, NOT verified on the user's own Mono 4.
 """
 
 from typing import Any
@@ -40,6 +45,65 @@ def _card(card_id: str, title: str, desc: str, pill: str, archetype: str,
     }
 
 
+def _resin_advice_cards() -> list[dict[str, Any]]:
+    """Resin advice for Water-Wash Resin 2.0 on the Photon Mono 4 (GĐ2).
+
+    These are safety / handling cards, not slicer fixes — resin has no bed
+    plate, no drying step and no enclosure door. Exposure numbers are
+    Anycubic's manufacturer-recommended values (see `resin_profiles.py`).
+    """
+    return [
+        _card(
+            "card_resin_water_wash",
+            "Rửa bằng nước sạch — KHÔNG dùng IPA",
+            (
+                "Water-Wash Resin 2.0 rửa được bằng nước sạch, KHÔNG dùng IPA. "
+                "Rửa kỹ trong nước, để khô hẳn rồi mới sấy UV — part còn ướt mà sấy "
+                "sẽ để lại vệt trắng. Thay nước rửa khi nước đã đục."
+            ),
+            "Rửa nước · Sấy UV sau khi khô",
+            "Rửa & sấy",
+        ),
+        _card(
+            "card_resin_safety",
+            "Đeo găng + thông gió — KHÔNG đổ nước rửa resin xuống cống",
+            (
+                "Resin chưa cure gây kích ứng da và có hại nếu hít phải: đeo găng tay "
+                "nitrile, mở cửa/thông gió khi in và rửa. Nước rửa có resin KHÔNG được "
+                "đổ xuống cống — phơi nắng/UV cho resin trong nước kết tủa rồi lọc bỏ "
+                "như rác thải nguy hại."
+            ),
+            "Găng nitrile · Thông gió · Không đổ cống",
+            "An toàn",
+        ),
+        _card(
+            "card_resin_exposure_starting_point",
+            "Preset 2.4s là số hãng khuyến nghị — in test trước khi in thật",
+            (
+                "Preset Water-Wash Resin 2.0 (layer 0.05mm, exposure 2.4s, đáy 30s x 5 lớp) "
+                "là số Anycubic khuyến nghị cho Photon Mono 4, CHƯA phải số đã in thành công "
+                "trên máy của bạn. In 1 mẫu test exposure (cones / AmeraLabs) trước, rồi "
+                "chỉnh theo kết quả thật. Nhiệt độ phòng 20–35°C: hè trên 30°C giảm 0.5–1s, "
+                "đông dưới 10°C tăng 0.5–1s."
+            ),
+            "Exposure 2.4s · In test trước",
+            "Preset khởi điểm",
+        ),
+        _card(
+            "card_resin_hollow_drain",
+            "Part rỗng: thành tối thiểu 1.2mm, tối thiểu 2 lỗ thoát resin",
+            (
+                "Rỗng ruột tiết kiệm resin nhưng thành dưới 1.2mm dễ nứt khi rửa và sấy UV. "
+                "Mọi hốc kín cần tối thiểu 2 lỗ thoát (1 vào, 1 ra) để resin lỏng chảy hết — "
+                "rỗng kín sẽ nhốt resin chưa cure bên trong và nứt part từ trong ra. "
+                "Đục lỗ ở mặt khuất (đáy, mặt sau) để không lộ khi trưng bày."
+            ),
+            "Thành ≥1.2mm · Tối thiểu 2 lỗ thoát",
+            "Rỗng ruột",
+        ),
+    ]
+
+
 def build_material_advice_cards(
     orig_cfg: dict[str, Any],
     printer: str,
@@ -47,6 +111,9 @@ def build_material_advice_cards(
     sys_def: dict[str, Any],
     has_screws: bool = False,
 ) -> list[dict[str, Any]]:
+    # GĐ2: resin printers get resin cards instead of the FDM ones.
+    if PRINTERS.get(printer, {}).get("technology") == "resin":
+        return _resin_advice_cards()
     family = material_family(filament_base_name(filament))
     label = policy_for(filament)["label"]
     enclosed = PRINTERS.get(printer, {}).get("enclosed", False)

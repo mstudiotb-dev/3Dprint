@@ -34,6 +34,32 @@ When downloading `.3mf` files from MakerWorld, Printables, or Thingiverse, newco
 
 ---
 
+## M.Studio fork — GĐ1: Creality K1 Max (FDM) · GĐ2: Anycubic Photon Mono 4 (resin)
+
+This fork (branch `k1max-gd1` for GĐ1, `resin-mono4-gd2` for GĐ2) adds the M.Studio
+printers to upstream LayerZero v2.2.0. Upstream supports Bambu Lab + Snapmaker U1 only.
+
+- **GĐ1 — Creality K1 Max 0.4, CoreXY kín, Creality Print 7.3.** PETG Creality preset from a
+  real print on 13/11/2026 (nozzle 245/240°C, bed PEI 75/70°C, Flow 0.97, max volumetric
+  12 mm³/s). Known limits: the bundle is built from verified real-print numbers, NOT a dump
+  of Creality Print 7.3 system presets; `printer_model_id` "K1_MAX" is a placeholder; the
+  exported `.3mf` still carries a BambuStudio application tag (Creality Print reads it fine).
+- **GĐ2 — Anycubic Photon Mono 4, MSLA resin 405nm, 153.4×87×165mm, CHITUBOX.** Resin is a
+  separate module (`backend/resin_profiles.py`, `backend/resin_checks.py`) — the FDM rule
+  engine does not apply to resin. Preset: **Anycubic Water-Wash Resin 2.0, Gray, 1kg**
+  (the user's own resin): layer 0.05mm, normal exposure **2.4s**, light-off 1s, bottom
+  exposure **30s**, bottom layers **5**, AA 1, Z lift 5mm, lift 8mm/s, retract 8mm/s.
+  ⚠️ These are **Anycubic's manufacturer-recommended values, NOT numbers proven on the
+  user's own Mono 4 yet** — print an exposure test first, then compare with the user's own
+  CHITUBOX settings. Resin checks: build-volume fit, wall ≥1.2mm, hollow parts need ≥2
+  drain holes, suction-cup warning (tilt 30–45°), resin ml + print-time estimates.
+  Resin safety: wash with water (NO IPA), UV-cure after drying, wear nitrile gloves +
+  ventilate, **never pour resin wash water down the drain**. **CHITUBOX produces the .ctb
+  print file itself — LayerZero does not write .ctb**; the preset values must be entered
+  in CHITUBOX. Photon Workshop is a secondary slicer option only.
+
+---
+
 ## Giới thiệu (Tiếng Việt)
 
 **LayerZero Studio** là công cụ mã nguồn mở kết hợp giữa **Toán học Hình thái 3D (Vectorized NumPy)** và **Headless AI Agent (Claude Code / `agy`)** giúp người dùng máy in 3D (đặc biệt là hệ sinh thái Bambu Studio / PrusaSlicer / OrcaSlicer):

@@ -199,12 +199,16 @@ export const App: React.FC = () => {
 
   const filamentOptionIds = presetOptions?.filaments.map((f) => f.id) ?? ['PLA Lite', 'PLA Basic', 'PETG HF'];
 
-  // The "Open in ..." button follows the selected printer's own slicer (Bambu Studio / Snapmaker Orca).
+  // The "Open in ..." button follows the selected printer's own slicer (Bambu Studio /
+  // Snapmaker Orca / CHITUBOX for the Anycubic Photon Mono 4 resin printer, GĐ2).
   const printerOptions = presetOptions?.printers ?? FALLBACK_PRINTERS;
   const currentPrinter = printerOptions.find((p) => p.id === printerPreset);
   const slicerId = currentPrinter?.slicer ?? 'bambu_studio';
   const slicerInfo = presetOptions?.slicers?.[slicerId];
-  const slicerLabel = slicerInfo?.label ?? (slicerId === 'snapmaker_orca' ? 'Snapmaker Orca' : 'Bambu Studio');
+  const slicerLabel =
+    slicerInfo?.label ??
+    ({ snapmaker_orca: 'Snapmaker Orca', chitubox: 'CHITUBOX', photon_workshop: 'Photon Workshop', lychee: 'Lychee Slicer' } as Record<string, string>)[slicerId] ??
+    'Bambu Studio';
   const slicerMissing = slicerInfo?.installed === false;
   const exportTarget = exportPrinter || printerPreset;
   const exportTargetOption = printerOptions.find((p) => p.id === exportTarget);
@@ -824,7 +828,9 @@ export const App: React.FC = () => {
           >
             <i className="ph-bold ph-arrow-square-out text-sm"></i>
             <span className="hidden sm:inline">{slicerLabel}</span>
-            <span className="sm:hidden">{slicerId === 'snapmaker_orca' ? 'Orca' : 'Bambu'}</span>
+            <span className="sm:hidden">
+              {({ snapmaker_orca: 'Orca', chitubox: 'Chitubox', photon_workshop: 'Photon', lychee: 'Lychee' } as Record<string, string>)[slicerId] ?? 'Bambu'}
+            </span>
           </button>
         </div>
       </header>
@@ -1907,7 +1913,7 @@ export const App: React.FC = () => {
                 <code className="font-mono text-[#0071E3]">.stl</code> vào đây hoặc bấm để chọn
               </span>
               <span className="text-[11.5px] text-[#6E6E73] mt-1">
-                Hỗ trợ Bambu Studio / Snapmaker Orca / PrusaSlicer (.3mf) & Binary / ASCII (.stl)
+                Hỗ trợ Bambu Studio / Snapmaker Orca / PrusaSlicer (.3mf) & Binary / ASCII (.stl) · Resin: CHITUBOX (.ctb do CHITUBOX tự cắt lớp)
               </span>
               <input
                 type="file"

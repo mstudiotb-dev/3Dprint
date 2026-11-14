@@ -17,6 +17,8 @@ from printer_catalog import (
     PRINTERS,
     SLICERS,
     VENDOR_FILAMENTS,
+    is_resin_printer,
+    load_anycubic_mono4_bundle,
     load_snapmaker_u1_bundle,
     needs_cross_vendor_retarget,
     normalize_printer,
@@ -146,6 +148,10 @@ def vendor_filament_base(printer: str, filament: str) -> str:
     base = filament_base_name(filament)
     if vendor_of(printer) != "bbl" and base in FILAMENTS.values():
         return VENDOR_FILAMENTS[vendor_of(printer)][filament_key_for(base)]
+    if vendor_of(printer) == "anycubic":
+        # Resin preset base names live in VENDOR_FILAMENTS["anycubic"] keyed by
+        # resin name ("Water-Wash Resin 2.0" -> "Anycubic Water-Wash Resin 2.0").
+        return VENDOR_FILAMENTS["anycubic"].get(base, base)
     return base
 
 
@@ -159,12 +165,20 @@ def resolve_filament_preset(printer: str, filament: str) -> str:
 
 @lru_cache(maxsize=32)
 def resolve_process_preset(printer: str, quality: str = "0.20mm Standard") -> str:
-    """Process preset of `quality` for the printer; U1 printers use Snapmaker's default process."""
+    """Process preset of `quality` for the printer; U1 printers use Snapmaker's default process.
+
+    Resin printers have no "0.20mm Standard": the Mono 4 default is the
+    0.05mm resin process from its bundle (layer height, exposure, lift).
+    """
     printer = normalize_printer(printer)
     if vendor_of(printer) == "snapmaker":
         default = load_snapmaker_u1_bundle()["default_process"].get(printer)
         picked = _pick_compatible(quality, printer, profiles_for(printer))
         return picked or default or f"{quality} {PRINTERS[printer]['fallback_process_suffix']}"
+    if vendor_of(printer) == "anycubic":
+        default = load_anycubic_mono4_bundle()["default_process"].get(printer)
+        picked = _pick_compatible(quality, printer, profiles_for(printer))
+        return picked or default or f"0.05mm Standard {PRINTERS[printer]['fallback_process_suffix']}"
     picked = _pick_compatible(quality, printer, profiles_for(printer))
     return picked or f"{quality} {PRINTERS[printer]['fallback_process_suffix']}"
 
@@ -317,6 +331,36 @@ def build_material_context(
 ) -> dict[str, Any]:
     """Summary the UI and AI prompt use to explain which presets and plate apply."""
     printer = normalize_printer(printer)
+    if is_resin_printer(printer):
+        # Resin has no filament slots, no bed plate and no FDM material
+        # family: the context is the resin preset itself. The FDM rule
+        # engine does not apply to resin printers (see resin_profiles.py).
+        from resin_profiles import list_resin_presets
+
+        meta = PRINTERS[printer]
+        resin = list_resin_presets().get(
+            filament, next(iter(list_resin_presets().values()))
+        )
+        return {
+            "printer_preset": printer,
+            "printer_label": meta["label"],
+            "printer_vendor": meta["vendor"],
+            "kinematics": meta["kinematics"],
+            "nozzle": meta["nozzle"],
+            "max_tools": meta["max_tools"],
+            "slicer": meta["slicer"],
+            "source_vendor": source_vendor_of(project_settings),
+            "cross_vendor_retarget": needs_cross_vendor_retarget(project_settings, printer),
+            "enclosed": meta["enclosed"],
+            "filament": resin["name"],
+            "filament_preset": f"Anycubic {resin['name']} @{printer}",
+            "family": "RESIN",
+            "bed_type": "—",
+            "bed_label": "Bàn in resin (không dùng tấm PEI)",
+            "slots": [],
+            "mixed_model_families": False,
+            "resin_preset": resin,
+        }
     slots = describe_filament_slots(project_settings)
     plan = plan_slot_filaments(slots, filament, slot_overrides)
     bed = bed_type_of(project_settings, printer)
@@ -352,7 +396,17 @@ def build_material_context(
 
 
 def list_preset_options() -> dict[str, Any]:
-    """Printer and filament choices, with the exact vendor preset each pair resolves to."""
+    """Printer and filament choices, with the exact vendor preset each pair resolves to.
+
+    Resin is listed separately from the FDM filaments: a resin preset is not
+    a filament, and offering "Water-Wash Resin 2.0" for a Bambu printer would
+    resolve to a nonsense preset name. `resin.printers` holds the resin
+    printer ids; `resin.presets` holds the resin presets with their
+    manufacturer-recommended numbers.
+    """
+    from resin_profiles import RESIN_BUILD_VOLUME_MM, list_resin_presets
+
+    resin_printers = [p for p, meta in PRINTERS.items() if meta.get("technology") == "resin"]
     return {
         "printers": [
             {
@@ -360,6 +414,7 @@ def list_preset_options() -> dict[str, Any]:
                 "label": meta["label"],
                 "vendor": meta["vendor"],
                 "vendor_label": meta["vendor_label"],
+                "technology": meta.get("technology", "fdm"),
                 "nozzle": meta["nozzle"],
                 "kinematics": meta["kinematics"],
                 "enclosed": meta["enclosed"],
@@ -374,10 +429,18 @@ def list_preset_options() -> dict[str, Any]:
                 "id": key,
                 "label": key,
                 "family": material_family(base),
-                "presets": {p: resolve_filament_preset(p, key) for p in PRINTERS},
+                # FDM filaments only resolve on FDM printers: a resin printer
+                # has no PLA/PETG preset to resolve to (KeyError otherwise).
+                "presets": {p: resolve_filament_preset(p, key) for p in PRINTERS
+                            if PRINTERS[p].get("technology") != "resin"},
             }
             for key, base in FILAMENTS.items()
         ],
+        "resin": {
+            "printers": resin_printers,
+            "build_volume_mm": list(RESIN_BUILD_VOLUME_MM),
+            "presets": list_resin_presets(),
+        },
         "default_printer": DEFAULT_PRINTER,
         "default_filament": DEFAULT_FILAMENT,
     }

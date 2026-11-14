@@ -13,6 +13,7 @@ export const FALLBACK_PRINTERS: PrinterOption[] = [
     label: label as string,
     vendor: 'bbl' as const,
     vendor_label: 'Bambu Lab',
+    technology: 'fdm' as const,
     nozzle: '0.4',
     kinematics: kinematics as string,
     enclosed: enclosed as boolean,
@@ -24,15 +25,32 @@ export const FALLBACK_PRINTERS: PrinterOption[] = [
     label: 'U1',
     vendor: 'snapmaker' as const,
     vendor_label: 'Snapmaker',
+    technology: 'fdm' as const,
     nozzle,
     kinematics: 'corexy_toolchanger',
     enclosed: false,
     max_tools: 4,
     slicer: 'snapmaker_orca' as const,
   })),
+  // M.Studio fork, GĐ2: Anycubic Photon Mono 4 (resin, MSLA). `nozzle` holds the default
+  // layer height (0.05mm) — resin has no nozzle. The user slices with CHITUBOX.
+  {
+    id: 'Anycubic Photon Mono 4',
+    label: 'Photon Mono 4',
+    vendor: 'anycubic' as const,
+    vendor_label: 'Anycubic',
+    technology: 'resin' as const,
+    nozzle: '0.05',
+    kinematics: 'resin_mlsa',
+    enclosed: false,
+    max_tools: null,
+    slicer: 'chitubox' as const,
+  },
 ];
 
-export const printerOptionLabel = (p: PrinterOption) => `${p.label} (${p.nozzle}mm)`;
+/** FDM: "A1 (0.4mm)"; resin: "Photon Mono 4 (resin · layer 0.05mm)". */
+export const printerOptionLabel = (p: PrinterOption) =>
+  p.technology === 'resin' ? `${p.label} (resin · layer ${p.nozzle}mm)` : `${p.label} (${p.nozzle}mm)`;
 
 interface PrinterSelectProps {
   printers: PrinterOption[];
@@ -44,7 +62,8 @@ interface PrinterSelectProps {
   title?: string;
 }
 
-/** Printer dropdown grouped by vendor (Bambu Lab / Snapmaker), each entry showing its nozzle size. */
+/** Printer dropdown grouped by vendor (Bambu Lab / Snapmaker / Anycubic resin),
+ * each entry showing its nozzle size (resin: layer height). */
 export const PrinterSelect: React.FC<PrinterSelectProps> = ({ printers, value, onChange, className, leadingOption, title }) => {
   const vendors = Array.from(new Set(printers.map((p) => p.vendor_label)));
   return (

@@ -1,0 +1,147 @@
+{
+ "source": {
+  "repository": "https://github.com/mstudiotb-dev/3Dprint",
+  "release": "resin-mono4-gd2",
+  "verification": "Manufacturer-recommended values from Anycubic for Water-Wash Resin 2.0 on the Photon Mono 4 (0.05mm layer): normal exposure 2.4s (range 2-2.5s), first layer 25-40s, bottom exposure 30s, 5 bottom layers, light-off 1s, Z lift 5mm, lift 8mm/s, retract 8mm/s, AA 1. NOT verified on the user's own Mono 4 yet — compare with the user's Photon Workshop settings before printing."
+ },
+ "printer_model_id": "PHOTON_MONO_4",
+ "default_process": {
+  "Anycubic Photon Mono 4": "0.05mm Standard @Anycubic Photon Mono 4"
+ },
+ "presets": {
+  "0.05mm Standard @Anycubic Photon Mono 4": {
+   "type": "process",
+   "name": "0.05mm Standard @Anycubic Photon Mono 4",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Anycubic Photon Mono 4"
+   ],
+   "layer_height": [
+    "0.05"
+   ],
+   "normal_exposure_s": [
+    "2.4"
+   ],
+   "bottom_exposure_s": [
+    "30.0"
+   ],
+   "bottom_layers": [
+    "5"
+   ],
+   "light_off_delay_s": [
+    "1.0"
+   ],
+   "z_lift_distance_mm": [
+    "5.0"
+   ],
+   "z_lift_speed_mm_s": [
+    "8.0"
+   ],
+   "z_retract_speed_mm_s": [
+    "8.0"
+   ],
+   "anti_aliasing": [
+    "1"
+   ]
+  },
+  "Anycubic Photon Mono 4": {
+   "type": "machine",
+   "name": "Anycubic Photon Mono 4",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Anycubic Photon Mono 4"
+   ],
+   "printer_model": "Photon Mono 4",
+   "printer_model_id": "PHOTON_MONO_4",
+   "technology": "resin_mlsa",
+   "printable_area": [
+    "0x0",
+    "153.4x0",
+    "153.4x87",
+    "0x87"
+   ],
+   "printable_height": "165",
+   "lcd_resolution": [
+    "9024x5120"
+   ],
+   "xy_resolution_um": [
+    "17"
+   ],
+   "min_layer_height": [
+    "0.03"
+   ],
+   "max_layer_height": [
+    "0.15"
+   ],
+   "vat_capacity_ml": [
+    "390"
+   ],
+   "default_print_profile": "0.05mm Standard @Anycubic Photon Mono 4"
+  },
+  "Anycubic Water-Wash Resin 2.0 @Anycubic Photon Mono 4": {
+   "type": "resin",
+   "name": "Anycubic Water-Wash Resin 2.0 @Anycubic Photon Mono 4",
+   "from": "system",
+   "instantiation": "true",
+   "compatible_printers": [
+    "Anycubic Photon Mono 4"
+   ],
+   "resin_type": [
+    "Water-Wash"
+   ],
+   "resin_vendor": [
+    "Anycubic"
+   ],
+   "resin_name": [
+    "Water-Wash Resin 2.0"
+   ],
+   "resin_colour": [
+    "Gray"
+   ],
+   "resin_bottle_kg": [
+    "1"
+   ],
+   "layer_height": [
+    "0.05"
+   ],
+   "normal_exposure_s": [
+    "2.4"
+   ],
+   "normal_exposure_range_s": [
+    "2-2.5"
+   ],
+   "first_layer_exposure_range_s": [
+    "25-40"
+   ],
+   "bottom_exposure_s": [
+    "30.0"
+   ],
+   "bottom_layers": [
+    "5"
+   ],
+   "light_off_delay_s": [
+    "1.0"
+   ],
+   "z_lift_distance_mm": [
+    "5.0"
+   ],
+   "z_lift_speed_mm_s": [
+    "8.0"
+   ],
+   "z_retract_speed_mm_s": [
+    "8.0"
+   ],
+   "anti_aliasing": [
+    "1"
+   ],
+   "recommended_temp_c": [
+    "20-35"
+   ],
+   "wash": [
+    "water"
+   ]
+  }
+ }
+}
